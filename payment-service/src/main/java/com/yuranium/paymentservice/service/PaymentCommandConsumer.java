@@ -1,7 +1,6 @@
 package com.yuranium.paymentservice.service;
 
 import com.yuranium.core.commands.PayGoodsCommand;
-import com.yuranium.core.events.PaymentFailedEvent;
 import com.yuranium.core.events.PaymentSuccessfulEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
