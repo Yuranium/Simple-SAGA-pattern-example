@@ -25,7 +25,7 @@ public class OrderHistoryEntity
     private UUID orderId;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    private OrderStatus status;
 
     @CreationTimestamp
     private Instant createdAt;

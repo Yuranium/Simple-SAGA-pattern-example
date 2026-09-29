@@ -40,4 +40,14 @@ public class OrderService
         ));
         return orderMapper.toOrderResponseDto(saved);
     }
+
+    @Transactional
+    public void changeOrderStatus(UUID orderId, OrderStatus orderStatus)
+    {
+        orderRepository.findById(orderId)
+                .ifPresent(order -> {
+                    order.setStatus(orderStatus);
+                    orderRepository.save(order);
+                });
+    }
 }

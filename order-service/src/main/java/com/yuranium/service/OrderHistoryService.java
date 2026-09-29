@@ -27,7 +27,7 @@ public class OrderHistoryService
         OrderHistoryEntity entity = new OrderHistoryEntity();
         entity.setHistoryId(UUID.randomUUID());
         entity.setOrderId(orderId);
-        entity.setOrderStatus(orderStatus);
+        entity.setStatus(orderStatus);
 
         historyRepository.save(entity);
     }

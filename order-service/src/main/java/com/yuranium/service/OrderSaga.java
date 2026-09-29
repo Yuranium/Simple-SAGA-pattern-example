@@ -1,12 +1,8 @@
 package com.yuranium.service;
 
-import com.yuranium.core.commands.ApproveOrderCommand;
 import com.yuranium.core.commands.GoodReserveCommand;
 import com.yuranium.core.commands.PayGoodsCommand;
-import com.yuranium.core.events.GoodPayedEvent;
-import com.yuranium.core.events.GoodReserveFailedEvent;
-import com.yuranium.core.events.GoodReservedEvent;
-import com.yuranium.core.events.OrderCreatedEvent;
+import com.yuranium.core.events.*;
 import com.yuranium.enums.OrderStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaHandler;
@@ -50,6 +46,11 @@ public class OrderSaga
                 event.goodPrice()
         ));
 
+        kafkaTemplate.send("order-command-topic", new OrderStatusChangedEvent(
+                event.orderId(),
+                OrderStatus.RESERVED.name()
+        ));
+
         historyService.addNewHistory(event.orderId(), OrderStatus.RESERVED);
     }
 
@@ -62,7 +63,7 @@ public class OrderSaga
     @KafkaHandler
     public void handle(@Payload GoodPayedEvent event)
     {
-        kafkaTemplate.send("payment-command-topic", new ApproveOrderCommand(event.orderId()));
         historyService.addNewHistory(event.orderId(), OrderStatus.APPROVED);
+        //kafkaTemplate.send("payment-command-topic", new ApproveOrderCommand(event.orderId()));
     }
 }
