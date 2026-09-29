@@ -1,16 +1,11 @@
 package com.yuranium.core.events;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.UUID;
 
-public record GoodPayedEvent(
+public record GoodReserveCancelledEvent(
         UUID goodId,
 
-        UUID orderId,
-
-        Long goodQuantity,
-
-        BigDecimal goodPrice
+        UUID orderId
 
 ) implements Serializable {}

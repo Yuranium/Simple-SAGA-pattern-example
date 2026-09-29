@@ -39,5 +39,6 @@ spring:
 
     topic-names:
       order: order-events-topic
+      order-command: order-command-topic
       good: good-events-topic
       payment: payment-events-topic

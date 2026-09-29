@@ -1,7 +1,8 @@
 package com.yuranium.paymentservice.service;
 
 import com.yuranium.core.commands.PayGoodsCommand;
-import com.yuranium.core.events.GoodPayedEvent;
+import com.yuranium.core.events.PaymentFailedEvent;
+import com.yuranium.core.events.PaymentSuccessfulEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaHandler;
@@ -22,11 +23,18 @@ public class PaymentCommandConsumer
     public void handle(@Payload PayGoodsCommand event)
     {
         log.info("Received Payment Command: {}", event);
-        kafkaTemplate.send("payment-events-topic", new GoodPayedEvent(
+        kafkaTemplate.send("payment-events-topic", new PaymentSuccessfulEvent(
                 event.goodId(),
                 event.orderId(),
                 event.goodQuantity(),
                 event.goodPrice()
         ));
+
+//        kafkaTemplate.send("payment-events-topic", new PaymentFailedEvent(
+//                event.goodId(),
+//                event.orderId(),
+//                event.goodQuantity(),
+//                event.goodPrice()
+//        ));
     }
 }

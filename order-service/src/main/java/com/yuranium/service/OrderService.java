@@ -45,9 +45,6 @@ public class OrderService
     public void changeOrderStatus(UUID orderId, OrderStatus orderStatus)
     {
         orderRepository.findById(orderId)
-                .ifPresent(order -> {
-                    order.setStatus(orderStatus);
-                    orderRepository.save(order);
-                });
+                .ifPresent(order -> order.setStatus(orderStatus));
     }
 }

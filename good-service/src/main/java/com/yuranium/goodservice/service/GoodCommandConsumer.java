@@ -1,6 +1,8 @@
 package com.yuranium.goodservice.service;
 
+import com.yuranium.core.commands.CancelGoodReserveCommand;
 import com.yuranium.core.commands.GoodReserveCommand;
+import com.yuranium.core.events.GoodReserveCancelledEvent;
 import com.yuranium.core.events.GoodReserveFailedEvent;
 import com.yuranium.core.events.GoodReservedEvent;
 import com.yuranium.goodservice.entity.GoodEntity;
@@ -40,5 +42,16 @@ public class GoodCommandConsumer
                     reserveCommand.goodQuantity()
             ));
         }
+    }
+
+    @KafkaHandler
+    public void handle(@Payload CancelGoodReserveCommand command)
+    {
+        goodService.cancelReservation(command);
+
+        kafkaTemplate.send("good-events-topic", new GoodReserveCancelledEvent(
+                command.goodId(),
+                command.orderId()
+        ));
     }
 }

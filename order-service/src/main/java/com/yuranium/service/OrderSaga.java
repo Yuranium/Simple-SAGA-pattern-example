@@ -1,7 +1,9 @@
 package com.yuranium.service;
 
+import com.yuranium.core.commands.CancelGoodReserveCommand;
 import com.yuranium.core.commands.GoodReserveCommand;
 import com.yuranium.core.commands.PayGoodsCommand;
+import com.yuranium.core.commands.RejectOrderCommand;
 import com.yuranium.core.events.*;
 import com.yuranium.enums.OrderStatus;
 import lombok.RequiredArgsConstructor;
@@ -57,13 +59,43 @@ public class OrderSaga
     @KafkaHandler
     public void handle(@Payload GoodReserveFailedEvent event)
     {
-        historyService.addNewHistory(event.orderId(), OrderStatus.REJECTED);
+        kafkaTemplate.send("order-command-topic", new RejectOrderCommand(
+                event.orderId()
+        ));
     }
 
     @KafkaHandler
-    public void handle(@Payload GoodPayedEvent event)
+    public void handle(@Payload PaymentSuccessfulEvent event)
     {
+        kafkaTemplate.send("order-command-topic", new OrderStatusChangedEvent(
+                event.orderId(),
+                OrderStatus.APPROVED.name()
+        ));
+
         historyService.addNewHistory(event.orderId(), OrderStatus.APPROVED);
         //kafkaTemplate.send("payment-command-topic", new ApproveOrderCommand(event.orderId()));
+    }
+
+    @KafkaHandler
+    public void handle(@Payload PaymentFailedEvent event)
+    {
+        kafkaTemplate.send("good-command-topic", new CancelGoodReserveCommand(
+                event.goodId(),
+                event.orderId(),
+                event.goodQuantity()
+        ));
+    }
+
+    @KafkaHandler
+    public void handle(@Payload GoodReserveCancelledEvent event)
+    {
+        kafkaTemplate.send("order-command-topic",
+                new RejectOrderCommand(event.orderId()));
+    }
+
+    @KafkaHandler
+    public void handle(@Payload OrderRejectedEvent event)
+    {
+        historyService.addNewHistory(event.orderId(), OrderStatus.REJECTED);
     }
 }

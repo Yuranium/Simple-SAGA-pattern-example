@@ -1,5 +1,6 @@
 package com.yuranium.goodservice.service;
 
+import com.yuranium.core.commands.CancelGoodReserveCommand;
 import com.yuranium.core.commands.GoodReserveCommand;
 import com.yuranium.goodservice.controller.GoodRequestDto;
 import com.yuranium.goodservice.dto.GoodResponseDto;
@@ -49,5 +50,16 @@ public class GoodService
 
         goodEntity.setGoodQuantity(goodEntity.getGoodQuantity() - reserveCommand.goodQuantity());
         return goodRepository.save(goodEntity);
+    }
+
+    @Transactional
+    public void cancelReservation(CancelGoodReserveCommand command)
+    {
+        GoodEntity goodEntity = goodRepository.findById(command.goodId())
+                .orElseThrow(() -> new RuntimeException("The good with ID=%s was not found"
+                        .formatted(command.goodId())));
+
+        goodEntity.setGoodQuantity(goodEntity.getGoodQuantity() + command.goodQuantity());
+        goodRepository.save(goodEntity);
     }
 }
