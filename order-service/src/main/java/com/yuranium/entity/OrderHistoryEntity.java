@@ -6,7 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Getter
@@ -18,11 +20,13 @@ import java.util.UUID;
 public class OrderHistoryEntity
 {
     @Id
-    private UUID orderHistoryId;
+    private UUID historyId;
+
+    private UUID orderId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private OrderEntity order;
+    @CreationTimestamp
+    private Instant createdAt;
 }

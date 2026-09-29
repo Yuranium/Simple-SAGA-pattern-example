@@ -1,12 +1,12 @@
 package com.yuranium.entity;
 
+import com.yuranium.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -26,6 +26,6 @@ public class OrderEntity
 
     private Long goodQuantity;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
-    private Set<OrderHistoryEntity> orderHistory;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 }

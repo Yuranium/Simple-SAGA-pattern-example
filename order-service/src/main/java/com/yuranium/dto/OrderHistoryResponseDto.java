@@ -3,13 +3,16 @@ package com.yuranium.dto;
 import com.yuranium.enums.OrderStatus;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.UUID;
 
 public record OrderHistoryResponseDto(
-        UUID orderHistoryId,
+        UUID historyId,
 
         UUID orderId,
 
-        OrderStatus orderStatus
+        OrderStatus orderStatus,
+
+        Instant createdAt
 
 ) implements Serializable {}

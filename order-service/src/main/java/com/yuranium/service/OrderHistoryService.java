@@ -22,11 +22,14 @@ public class OrderHistoryService
     private final OrderMapper orderMapper;
 
     @Transactional
-    public void addNewHistory(OrderEntity order, OrderStatus orderStatus)
+    public void addNewHistory(UUID orderId, OrderStatus orderStatus)
     {
-        historyRepository.save(
-                new OrderHistoryEntity(UUID.randomUUID(), orderStatus, order)
-        );
+        OrderHistoryEntity entity = new OrderHistoryEntity();
+        entity.setHistoryId(UUID.randomUUID());
+        entity.setOrderId(orderId);
+        entity.setOrderStatus(orderStatus);
+
+        historyRepository.save(entity);
     }
 
     @Transactional
