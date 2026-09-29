@@ -27,5 +27,5 @@ public class OrderEntity
     private Long goodQuantity;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    private OrderStatus status;
 }

@@ -1,5 +1,7 @@
 package com.yuranium.dto;
 
+import com.yuranium.enums.OrderStatus;
+
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -10,6 +12,8 @@ public record OrderResponseDto(
 
         UUID goodId,
 
-        Long goodQuantity
+        Long goodQuantity,
+
+        OrderStatus status
 
 ) implements Serializable {}

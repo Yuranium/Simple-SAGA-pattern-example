@@ -1,5 +1,6 @@
 package com.yuranium.goodservice.service;
 
+import com.yuranium.core.commands.GoodReserveCommand;
 import com.yuranium.goodservice.controller.GoodRequestDto;
 import com.yuranium.goodservice.dto.GoodResponseDto;
 import com.yuranium.goodservice.entity.GoodEntity;
@@ -34,5 +35,19 @@ public class GoodService
     {
         return goodRepository.findAll(pageable)
                 .map(goodMapper::toGoodResponseDto);
+    }
+
+    @Transactional
+    public GoodEntity reserveGood(GoodReserveCommand reserveCommand)
+    {
+        GoodEntity goodEntity = goodRepository.findById(reserveCommand.goodId())
+                .orElseThrow(() -> new RuntimeException("The good with ID=%s was not found"
+                        .formatted(reserveCommand.goodId())));
+
+        if (goodEntity.getGoodQuantity() < reserveCommand.goodQuantity())
+            throw new RuntimeException("The good quantity is less than or equal to the good quantity");
+
+        goodEntity.setGoodQuantity(goodEntity.getGoodQuantity() - reserveCommand.goodQuantity());
+        return goodRepository.save(goodEntity);
     }
 }

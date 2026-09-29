@@ -29,7 +29,7 @@ public class OrderService
     {
         OrderEntity orderEntity = orderMapper.toOrderEntity(orderDto);
         orderEntity.setOrderId(UUID.randomUUID());
-        orderEntity.setOrderStatus(OrderStatus.CREATED);
+        orderEntity.setStatus(OrderStatus.CREATED);
         OrderEntity saved = orderRepository.save(orderEntity);
 
         kafkaTemplate.send("order-events-topic", new OrderCreatedEvent(

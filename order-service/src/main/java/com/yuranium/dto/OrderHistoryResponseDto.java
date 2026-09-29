@@ -11,7 +11,7 @@ public record OrderHistoryResponseDto(
 
         UUID orderId,
 
-        OrderStatus orderStatus,
+        OrderStatus status,
 
         Instant createdAt
 

@@ -1,0 +1,13 @@
+package com.yuranium.core.events;
+
+import java.io.Serializable;
+import java.util.UUID;
+
+public record GoodReserveFailedEvent(
+        UUID goodId,
+
+        UUID orderId,
+
+        Long goodQuantity
+
+) implements Serializable {}

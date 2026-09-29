@@ -1,15 +1,16 @@
 server:
-  port: 8080
+  port: 8082
 
 spring:
   application:
-    name: order-service
+    name: payment-service
+
   h2:
     console:
       enabled: true
 
   datasource:
-    url: jdbc:h2:mem:order-db
+    url: jdbc:h2:mem:payment-db
     username: test
     password: test
     driverClassName: org.h2.Driver
@@ -38,6 +39,4 @@ spring:
         spring.json.trusted.packages: com.yuranium.core.*
 
     topic-names:
-      order: order-events-topic
-      good: good-events-topic
-      payment: payment-events-topic
+      payment: payment-command-topic
