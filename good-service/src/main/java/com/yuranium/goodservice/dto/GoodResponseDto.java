@@ -1,6 +1,6 @@
 package com.yuranium.goodservice.dto;
 
-import com.yuranium.goodservice.GoodStatus;
+import com.yuranium.goodservice.enums.GoodStatus;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

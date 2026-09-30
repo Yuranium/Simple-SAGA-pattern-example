@@ -1,4 +1,4 @@
-package com.yuranium.goodservice;
+package com.yuranium.goodservice.enums;
 
 public enum GoodStatus
 {

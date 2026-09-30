@@ -1,6 +1,6 @@
 package com.yuranium.goodservice.entity;
 
-import com.yuranium.goodservice.GoodStatus;
+import com.yuranium.goodservice.enums.GoodStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
