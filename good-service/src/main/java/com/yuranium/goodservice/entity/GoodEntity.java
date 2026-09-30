@@ -1,8 +1,7 @@
 package com.yuranium.goodservice.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.yuranium.goodservice.GoodStatus;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +23,34 @@ public class GoodEntity
 
     private Long goodQuantity;
 
+    private Long reservedQuantity;
+
     private BigDecimal goodPrice;
 
     private String goodName;
+
+    @PrePersist
+    private void prePersist()
+    {
+        if (reservedQuantity == null)
+            this.reservedQuantity = 0L;
+    }
+
+    @Transient
+    public GoodStatus getStatus()
+    {
+        if (getAvailableQuantity() > 0)
+            return GoodStatus.AVAILABLE;
+
+        else if (reservedQuantity > 0 && getAvailableQuantity() == 0)
+            return GoodStatus.RESERVED;
+
+        return GoodStatus.OUT_OF_STOCK;
+    }
+
+    @Transient
+    public Long getAvailableQuantity()
+    {
+        return goodQuantity - reservedQuantity;
+    }
 }

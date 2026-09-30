@@ -1,7 +1,9 @@
 package com.yuranium.goodservice.service;
 
 import com.yuranium.core.commands.CancelGoodReserveCommand;
+import com.yuranium.core.commands.GoodCompleteReserveCommand;
 import com.yuranium.core.commands.GoodReserveCommand;
+import com.yuranium.goodservice.GoodStatus;
 import com.yuranium.goodservice.controller.GoodRequestDto;
 import com.yuranium.goodservice.dto.GoodResponseDto;
 import com.yuranium.goodservice.entity.GoodEntity;
@@ -45,11 +47,26 @@ public class GoodService
                 .orElseThrow(() -> new RuntimeException("The good with ID=%s was not found"
                         .formatted(reserveCommand.goodId())));
 
-        if (goodEntity.getGoodQuantity() < reserveCommand.goodQuantity())
+        if (goodEntity.getAvailableQuantity() < reserveCommand.goodQuantity())
             throw new RuntimeException("The good quantity is less than or equal to the good quantity");
 
-        goodEntity.setGoodQuantity(goodEntity.getGoodQuantity() - reserveCommand.goodQuantity());
+        goodEntity.setReservedQuantity(goodEntity.getReservedQuantity() + reserveCommand.goodQuantity());
         return goodRepository.save(goodEntity);
+    }
+
+    @Transactional
+    public void completeReserveGood(GoodCompleteReserveCommand command)
+    {
+        GoodEntity goodEntity = goodRepository.findById(command.goodId())
+                .orElseThrow(() -> new RuntimeException("The good with ID=%s was not found"
+                        .formatted(command.goodId())));
+
+        if (goodEntity.getReservedQuantity() < command.goodQuantity())
+            throw new RuntimeException("The reserved good quantity is less than or equal to the good quantity");
+
+        goodEntity.setGoodQuantity(goodEntity.getGoodQuantity() - command.goodQuantity());
+        goodEntity.setReservedQuantity(goodEntity.getReservedQuantity() - command.goodQuantity());
+        goodRepository.save(goodEntity);
     }
 
     @Transactional
@@ -60,6 +77,7 @@ public class GoodService
                         .formatted(command.goodId())));
 
         goodEntity.setGoodQuantity(goodEntity.getGoodQuantity() + command.goodQuantity());
+        goodEntity.setReservedQuantity(goodEntity.getReservedQuantity() - command.goodQuantity());
         goodRepository.save(goodEntity);
     }
 }

@@ -1,10 +1,9 @@
 package com.yuranium.goodservice.service;
 
 import com.yuranium.core.commands.CancelGoodReserveCommand;
+import com.yuranium.core.commands.GoodCompleteReserveCommand;
 import com.yuranium.core.commands.GoodReserveCommand;
-import com.yuranium.core.events.GoodReserveCancelledEvent;
-import com.yuranium.core.events.GoodReserveFailedEvent;
-import com.yuranium.core.events.GoodReservedEvent;
+import com.yuranium.core.events.*;
 import com.yuranium.goodservice.entity.GoodEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaHandler;
@@ -40,6 +39,26 @@ public class GoodCommandConsumer
                     reserveCommand.goodId(),
                     reserveCommand.orderId(),
                     reserveCommand.goodQuantity()
+            ));
+        }
+    }
+
+    @KafkaHandler
+    public void handle(@Payload GoodCompleteReserveCommand command)
+    {
+        try
+        {
+            goodService.completeReserveGood(command);
+            kafkaTemplate.send("good-events-topic", new GoodCompleteReserveEvent(
+                    command.orderId()
+            ));
+        } catch (Exception e)
+        {
+            kafkaTemplate.send("good-events-topic", new GoodFailedCompleteReserveEvent(
+                    command.goodId(),
+                    command.orderId(),
+                    command.goodQuantity(),
+                    command.goodPrice()
             ));
         }
     }

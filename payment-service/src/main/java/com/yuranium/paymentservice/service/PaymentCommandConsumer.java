@@ -1,6 +1,8 @@
 package com.yuranium.paymentservice.service;
 
+import com.yuranium.core.commands.CancelPaymentCommand;
 import com.yuranium.core.commands.PayGoodsCommand;
+import com.yuranium.core.events.PaymentFailedEvent;
 import com.yuranium.core.events.PaymentSuccessfulEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,5 +37,18 @@ public class PaymentCommandConsumer
 //                event.goodQuantity(),
 //                event.goodPrice()
 //        ));
+    }
+
+    @KafkaHandler
+    public void handle(@Payload CancelPaymentCommand command)
+    {
+        log.info("payment cancell process...");
+
+        kafkaTemplate.send("payment-events-topic", new PaymentFailedEvent(
+                command.goodId(),
+                command.orderId(),
+                command.goodQuantity(),
+                command.goodPrice()
+        ));
     }
 }

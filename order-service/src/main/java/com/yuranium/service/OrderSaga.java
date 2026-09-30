@@ -1,9 +1,6 @@
 package com.yuranium.service;
 
-import com.yuranium.core.commands.CancelGoodReserveCommand;
-import com.yuranium.core.commands.GoodReserveCommand;
-import com.yuranium.core.commands.PayGoodsCommand;
-import com.yuranium.core.commands.RejectOrderCommand;
+import com.yuranium.core.commands.*;
 import com.yuranium.core.events.*;
 import com.yuranium.enums.OrderStatus;
 import lombok.RequiredArgsConstructor;
@@ -67,13 +64,14 @@ public class OrderSaga
     @KafkaHandler
     public void handle(@Payload PaymentSuccessfulEvent event)
     {
-        kafkaTemplate.send("order-command-topic", new OrderStatusChangedEvent(
+        kafkaTemplate.send("good-command-topic", new GoodCompleteReserveCommand(
+                event.goodId(),
                 event.orderId(),
-                OrderStatus.APPROVED.name()
+                event.goodQuantity(),
+                event.goodPrice()
         ));
 
-        historyService.addNewHistory(event.orderId(), OrderStatus.APPROVED);
-        //kafkaTemplate.send("payment-command-topic", new ApproveOrderCommand(event.orderId()));
+        historyService.addNewHistory(event.orderId(), OrderStatus.PAYED);
     }
 
     @KafkaHandler
@@ -83,6 +81,28 @@ public class OrderSaga
                 event.goodId(),
                 event.orderId(),
                 event.goodQuantity()
+        ));
+    }
+
+    @KafkaHandler
+    public void handle(@Payload GoodCompleteReserveEvent event)
+    {
+        kafkaTemplate.send("order-command-topic", new OrderStatusChangedEvent(
+                event.orderId(),
+                OrderStatus.APPROVED.name()
+        ));
+
+        historyService.addNewHistory(event.orderId(), OrderStatus.APPROVED);
+    }
+
+    @KafkaHandler
+    public void handle(@Payload GoodFailedCompleteReserveEvent event)
+    {
+        kafkaTemplate.send("payment-command-topic", new CancelPaymentCommand(
+                event.goodId(),
+                event.orderId(),
+                event.goodQuantity(),
+                event.goodPrice()
         ));
     }
 

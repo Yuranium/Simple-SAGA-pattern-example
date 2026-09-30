@@ -1,5 +1,7 @@
 package com.yuranium.goodservice.dto;
 
+import com.yuranium.goodservice.GoodStatus;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -9,8 +11,12 @@ public record GoodResponseDto(
 
         Long goodQuantity,
 
+        Long availableQuantity,
+
         BigDecimal goodPrice,
 
-        String goodName
+        String goodName,
+
+        GoodStatus status
 
 ) implements Serializable {}
