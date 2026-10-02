@@ -1,6 +1,6 @@
-package com.yuranium.goodservice.entity;
+package com.yuranium.entity;
 
-import com.yuranium.goodservice.enums.OutboxStatus;
+import com.yuranium.enums.OutboxStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "good_outbox")
+@Table(name = "order_outbox")
 @NoArgsConstructor
 @AllArgsConstructor
 public class OutboxEntity

@@ -1,7 +1,6 @@
 package com.yuranium.service;
 
 import com.yuranium.dto.OrderHistoryResponseDto;
-import com.yuranium.entity.OrderEntity;
 import com.yuranium.entity.OrderHistoryEntity;
 import com.yuranium.enums.OrderStatus;
 import com.yuranium.mapper.OrderMapper;

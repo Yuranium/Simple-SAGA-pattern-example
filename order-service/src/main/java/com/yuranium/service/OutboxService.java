@@ -1,10 +1,10 @@
-package com.yuranium.goodservice.service;
+package com.yuranium.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yuranium.goodservice.entity.OutboxEntity;
-import com.yuranium.goodservice.enums.OutboxStatus;
-import com.yuranium.goodservice.repository.OutboxRepository;
+import com.yuranium.entity.OutboxEntity;
+import com.yuranium.enums.OutboxStatus;
+import com.yuranium.repository.OutboxRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;

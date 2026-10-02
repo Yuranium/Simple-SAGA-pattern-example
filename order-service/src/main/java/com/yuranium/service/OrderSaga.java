@@ -19,103 +19,59 @@ import org.springframework.stereotype.Service;
 })
 public class OrderSaga
 {
-    private final OrderHistoryService historyService;
-
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final OrderSagaService sagaService;
 
     @KafkaHandler
     public void handle(@Payload OrderCreatedEvent event)
     {
-        kafkaTemplate.send("good-command-topic", new GoodReserveCommand(
-                event.goodId(),
-                event.orderId(),
-                event.goodQuantity())
-        );
-
-        historyService.addNewHistory(event.orderId(), OrderStatus.CREATED);
+        sagaService.handleOrderCreated(event);
     }
 
     @KafkaHandler
     public void handle(@Payload GoodReservedEvent event)
     {
-        kafkaTemplate.send("payment-command-topic", new PayGoodsCommand(
-                event.goodId(),
-                event.orderId(),
-                event.goodQuantity(),
-                event.goodPrice()
-        ));
-
-        kafkaTemplate.send("order-command-topic", new OrderStatusChangedEvent(
-                event.orderId(),
-                OrderStatus.RESERVED.name()
-        ));
-
-        historyService.addNewHistory(event.orderId(), OrderStatus.RESERVED);
+        sagaService.handleGoodReserved(event);
     }
 
     @KafkaHandler
     public void handle(@Payload GoodReserveFailedEvent event)
     {
-        kafkaTemplate.send("order-command-topic", new RejectOrderCommand(
-                event.orderId()
-        ));
+        sagaService.handleGoodReserveFailed(event);
     }
 
     @KafkaHandler
     public void handle(@Payload PaymentSuccessfulEvent event)
     {
-        kafkaTemplate.send("good-command-topic", new GoodCompleteReserveCommand(
-                event.goodId(),
-                event.orderId(),
-                event.goodQuantity(),
-                event.goodPrice()
-        ));
-
-        historyService.addNewHistory(event.orderId(), OrderStatus.PAYED);
+        sagaService.handlePaymentSuccessful(event);
     }
 
     @KafkaHandler
     public void handle(@Payload PaymentFailedEvent event)
     {
-        kafkaTemplate.send("good-command-topic", new CancelGoodReserveCommand(
-                event.goodId(),
-                event.orderId(),
-                event.goodQuantity()
-        ));
+        sagaService.handlePaymentFailed(event);
     }
 
     @KafkaHandler
     public void handle(@Payload GoodCompleteReserveEvent event)
     {
-        kafkaTemplate.send("order-command-topic", new OrderStatusChangedEvent(
-                event.orderId(),
-                OrderStatus.APPROVED.name()
-        ));
-
-        historyService.addNewHistory(event.orderId(), OrderStatus.APPROVED);
+        sagaService.handleGoodCompleteReserve(event);
     }
 
     @KafkaHandler
     public void handle(@Payload GoodFailedCompleteReserveEvent event)
     {
-        kafkaTemplate.send("payment-command-topic", new CancelPaymentCommand(
-                event.goodId(),
-                event.orderId(),
-                event.goodQuantity(),
-                event.goodPrice()
-        ));
+        sagaService.handleGoodFailedCompleteReserve(event);
     }
 
     @KafkaHandler
     public void handle(@Payload GoodReserveCancelledEvent event)
     {
-        kafkaTemplate.send("order-command-topic",
-                new RejectOrderCommand(event.orderId()));
+        sagaService.handleGoodReserveCancelled(event);
     }
 
     @KafkaHandler
     public void handle(@Payload OrderRejectedEvent event)
     {
-        historyService.addNewHistory(event.orderId(), OrderStatus.REJECTED);
+        sagaService.handleOrderRejected(event);
     }
 }

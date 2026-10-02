@@ -1,7 +1,7 @@
-package com.yuranium.goodservice.repository;
+package com.yuranium.repository;
 
-import com.yuranium.goodservice.entity.OutboxEntity;
-import com.yuranium.goodservice.enums.OutboxStatus;
+import com.yuranium.entity.OutboxEntity;
+import com.yuranium.enums.OutboxStatus;
 import org.springframework.data.domain.Limit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

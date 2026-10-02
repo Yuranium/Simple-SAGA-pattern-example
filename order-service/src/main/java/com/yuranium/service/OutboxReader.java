@@ -1,7 +1,7 @@
-package com.yuranium.goodservice.service;
+package com.yuranium.service;
 
-import com.yuranium.goodservice.entity.OutboxEntity;
-import com.yuranium.goodservice.enums.OutboxStatus;
+import com.yuranium.entity.OutboxEntity;
+import com.yuranium.enums.OutboxStatus;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -40,12 +40,12 @@ public class OutboxReader
                 );
 
                 record.headers()
-                        .add(
-                                "__TypeId__",
+                        .add("__TypeId__",
                                 event.getEventType()
                                         .getBytes(StandardCharsets.UTF_8)
                         );
 
+                System.out.println(record);
                 kafkaTemplate.send(record)
                         .get();
 
