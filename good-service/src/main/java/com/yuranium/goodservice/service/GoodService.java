@@ -3,7 +3,7 @@ package com.yuranium.goodservice.service;
 import com.yuranium.core.commands.CancelGoodReserveCommand;
 import com.yuranium.core.commands.GoodCompleteReserveCommand;
 import com.yuranium.core.commands.GoodReserveCommand;
-import com.yuranium.goodservice.controller.GoodRequestDto;
+import com.yuranium.goodservice.dto.GoodRequestDto;
 import com.yuranium.goodservice.dto.GoodResponseDto;
 import com.yuranium.goodservice.entity.GoodEntity;
 import com.yuranium.goodservice.mapper.GoodMapper;

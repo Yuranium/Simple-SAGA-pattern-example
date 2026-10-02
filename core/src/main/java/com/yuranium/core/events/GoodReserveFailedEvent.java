@@ -8,6 +8,8 @@ public record GoodReserveFailedEvent(
 
         UUID orderId,
 
-        Long goodQuantity
+        Long goodQuantity,
+
+        String reason
 
 ) implements Serializable {}

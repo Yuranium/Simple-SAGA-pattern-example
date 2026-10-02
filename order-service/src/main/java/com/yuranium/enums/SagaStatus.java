@@ -1,4 +1,4 @@
-package com.yuranium.goodservice.enums;
+package com.yuranium.enums;
 
 public enum SagaStatus
 {

@@ -1,6 +1,6 @@
 package com.yuranium.goodservice.mapper;
 
-import com.yuranium.goodservice.controller.GoodRequestDto;
+import com.yuranium.goodservice.dto.GoodRequestDto;
 import com.yuranium.goodservice.dto.GoodResponseDto;
 import com.yuranium.goodservice.entity.GoodEntity;
 import org.mapstruct.Mapper;

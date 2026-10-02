@@ -1,4 +1,4 @@
-package com.yuranium.goodservice.controller;
+package com.yuranium.goodservice.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

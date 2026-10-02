@@ -1,5 +1,6 @@
 package com.yuranium.goodservice.controller;
 
+import com.yuranium.goodservice.dto.GoodRequestDto;
 import com.yuranium.goodservice.dto.GoodResponseDto;
 import com.yuranium.goodservice.service.GoodService;
 import lombok.RequiredArgsConstructor;

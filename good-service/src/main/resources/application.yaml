@@ -39,3 +39,4 @@ spring:
 
     topic-names:
       good-command: good-command-topic
+      good-event: good-events-topic

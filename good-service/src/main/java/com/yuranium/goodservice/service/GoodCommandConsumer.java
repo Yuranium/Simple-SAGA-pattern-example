@@ -3,14 +3,18 @@ package com.yuranium.goodservice.service;
 import com.yuranium.core.commands.CancelGoodReserveCommand;
 import com.yuranium.core.commands.GoodCompleteReserveCommand;
 import com.yuranium.core.commands.GoodReserveCommand;
-import com.yuranium.core.events.*;
+import com.yuranium.core.events.GoodCompleteReserveEvent;
+import com.yuranium.core.events.GoodFailedCompleteReserveEvent;
+import com.yuranium.core.events.GoodReserveFailedEvent;
+import com.yuranium.core.events.GoodReservedEvent;
 import com.yuranium.goodservice.entity.GoodEntity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,15 +23,19 @@ public class GoodCommandConsumer
 {
     private final GoodService goodService;
 
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final OutboxService outboxService;
+
+    @Value("${spring.kafka.topic-names.good-event}")
+    private String GOODS_TOPIC;
 
     @KafkaHandler
+    @Transactional
     public void handle(@Payload GoodReserveCommand reserveCommand)
     {
         try
         {
             GoodEntity goodEntity = goodService.reserveGood(reserveCommand);
-            kafkaTemplate.send("good-events-topic", new GoodReservedEvent(
+            outboxService.createEvent(GOODS_TOPIC, new GoodReservedEvent(
                     reserveCommand.goodId(),
                     reserveCommand.orderId(),
                     reserveCommand.goodQuantity(),
@@ -35,26 +43,27 @@ public class GoodCommandConsumer
             ));
         } catch (Exception e)
         {
-            kafkaTemplate.send("good-events-topic", new GoodReserveFailedEvent(
+            outboxService.createEvent(GOODS_TOPIC, new GoodReserveFailedEvent(
                     reserveCommand.goodId(),
                     reserveCommand.orderId(),
-                    reserveCommand.goodQuantity()
+                    reserveCommand.goodQuantity(),
+                    e.getMessage()
             ));
         }
     }
 
     @KafkaHandler
+    @Transactional
     public void handle(@Payload GoodCompleteReserveCommand command)
     {
         try
         {
             goodService.completeReserveGood(command);
-            kafkaTemplate.send("good-events-topic", new GoodCompleteReserveEvent(
-                    command.orderId()
-            ));
+            outboxService.createEvent(GOODS_TOPIC,
+                    new GoodCompleteReserveEvent(command.orderId()));
         } catch (Exception e)
         {
-            kafkaTemplate.send("good-events-topic", new GoodFailedCompleteReserveEvent(
+            outboxService.createEvent(GOODS_TOPIC, new GoodFailedCompleteReserveEvent(
                     command.goodId(),
                     command.orderId(),
                     command.goodQuantity(),
@@ -64,13 +73,9 @@ public class GoodCommandConsumer
     }
 
     @KafkaHandler
+    @Transactional
     public void handle(@Payload CancelGoodReserveCommand command)
     {
         goodService.cancelReservation(command);
-
-        kafkaTemplate.send("good-events-topic", new GoodReserveCancelledEvent(
-                command.goodId(),
-                command.orderId()
-        ));
     }
 }
