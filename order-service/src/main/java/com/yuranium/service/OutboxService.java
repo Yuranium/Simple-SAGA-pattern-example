@@ -2,6 +2,8 @@ package com.yuranium.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yuranium.core.KafkaMessage;
+import com.yuranium.core.MessageType;
 import com.yuranium.entity.OutboxEntity;
 import com.yuranium.enums.OutboxStatus;
 import com.yuranium.repository.OutboxRepository;
@@ -20,12 +22,12 @@ public class OutboxService
 
     private final ObjectMapper objectMapper;
 
-    public void createEvent(String topic, Object event)
+    public void createEvent(String topic, KafkaMessage event, MessageType type)
     {
         try
         {
             var convertedEvent = objectMapper.writeValueAsString(event);
-            outboxRepository.save(new OutboxEntity(topic, convertedEvent));
+            outboxRepository.save(new OutboxEntity(topic, type , convertedEvent));
         } catch (JsonProcessingException e)
         {
             e.printStackTrace();

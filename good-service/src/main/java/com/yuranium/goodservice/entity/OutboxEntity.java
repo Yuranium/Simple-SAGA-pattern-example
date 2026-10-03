@@ -1,5 +1,6 @@
 package com.yuranium.goodservice.entity;
 
+import com.yuranium.core.MessageType;
 import com.yuranium.goodservice.enums.OutboxStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,9 @@ public class OutboxEntity
 
     private String topic;
 
+    @Enumerated(EnumType.STRING)
+    private MessageType eventType;
+
     private String payload;
 
     @Enumerated(EnumType.STRING)
@@ -32,9 +36,10 @@ public class OutboxEntity
     @CreationTimestamp
     private Instant savedAt;
 
-    public OutboxEntity(String topic, String payload)
+    public OutboxEntity(String topic, MessageType eventType, String payload)
     {
         this.topic = topic;
+        this.eventType = eventType;
         this.payload = payload;
     }
 }

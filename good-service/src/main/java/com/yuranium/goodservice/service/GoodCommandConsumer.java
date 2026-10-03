@@ -1,5 +1,6 @@
 package com.yuranium.goodservice.service;
 
+import com.yuranium.core.MessageType;
 import com.yuranium.core.commands.CancelGoodReserveCommand;
 import com.yuranium.core.commands.GoodCompleteReserveCommand;
 import com.yuranium.core.commands.GoodReserveCommand;
@@ -35,20 +36,26 @@ public class GoodCommandConsumer
         try
         {
             GoodEntity goodEntity = goodService.reserveGood(reserveCommand);
-            outboxService.createEvent(GOODS_TOPIC, new GoodReservedEvent(
-                    reserveCommand.goodId(),
-                    reserveCommand.orderId(),
-                    reserveCommand.goodQuantity(),
-                    goodEntity.getGoodPrice()
-            ));
+            outboxService.createEvent(
+                    GOODS_TOPIC, new GoodReservedEvent(
+                            reserveCommand.goodId(),
+                            reserveCommand.orderId(),
+                            reserveCommand.goodQuantity(),
+                            goodEntity.getGoodPrice()
+                    ),
+                    MessageType.GOOD_RESERVED_EVENT
+            );
         } catch (Exception e)
         {
-            outboxService.createEvent(GOODS_TOPIC, new GoodReserveFailedEvent(
-                    reserveCommand.goodId(),
-                    reserveCommand.orderId(),
-                    reserveCommand.goodQuantity(),
-                    e.getMessage()
-            ));
+            outboxService.createEvent(
+                    GOODS_TOPIC, new GoodReserveFailedEvent(
+                            reserveCommand.goodId(),
+                            reserveCommand.orderId(),
+                            reserveCommand.goodQuantity(),
+                            e.getMessage()
+                    ),
+                    MessageType.GOOD_RESERVE_FAILED_EVENT
+            );
         }
     }
 
@@ -59,16 +66,22 @@ public class GoodCommandConsumer
         try
         {
             goodService.completeReserveGood(command);
-            outboxService.createEvent(GOODS_TOPIC,
-                    new GoodCompleteReserveEvent(command.orderId()));
+            outboxService.createEvent(
+                    GOODS_TOPIC,
+                    new GoodCompleteReserveEvent(command.orderId()),
+                    MessageType.GOOD_COMPLETE_RESERVE_EVENT
+            );
         } catch (Exception e)
         {
-            outboxService.createEvent(GOODS_TOPIC, new GoodFailedCompleteReserveEvent(
-                    command.goodId(),
-                    command.orderId(),
-                    command.goodQuantity(),
-                    command.goodPrice()
-            ));
+            outboxService.createEvent(
+                    GOODS_TOPIC, new GoodFailedCompleteReserveEvent(
+                            command.goodId(),
+                            command.orderId(),
+                            command.goodQuantity(),
+                            command.goodPrice()
+                    ),
+                    MessageType.GOOD_FAILED_COMPLETE_RESERVE_EVENT
+            );
         }
     }
 

@@ -1,5 +1,7 @@
 package com.yuranium.core.commands;
 
+import com.yuranium.core.KafkaMessage;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -13,4 +15,4 @@ public record CancelPaymentCommand(
 
         BigDecimal goodPrice
 
-) implements Serializable {}
+) implements KafkaMessage, Serializable {}

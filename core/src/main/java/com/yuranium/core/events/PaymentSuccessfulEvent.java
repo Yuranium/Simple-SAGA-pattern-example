@@ -1,5 +1,7 @@
 package com.yuranium.core.events;
 
+import com.yuranium.core.KafkaMessage;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -13,4 +15,4 @@ public record PaymentSuccessfulEvent(
 
         BigDecimal goodPrice
 
-) implements Serializable {}
+) implements KafkaMessage, Serializable {}

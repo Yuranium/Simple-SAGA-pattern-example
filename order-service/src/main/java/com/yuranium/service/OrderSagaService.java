@@ -1,5 +1,6 @@
 package com.yuranium.service;
 
+import com.yuranium.core.MessageType;
 import com.yuranium.core.commands.*;
 import com.yuranium.core.events.*;
 import com.yuranium.enums.OrderStatus;
@@ -30,7 +31,8 @@ public class OrderSagaService
                         event.goodId(),
                         event.orderId(),
                         event.goodQuantity()
-                )
+                ),
+                MessageType.GOOD_RESERVE_COMMAND
         );
     }
 
@@ -50,7 +52,8 @@ public class OrderSagaService
                         event.orderId(),
                         event.goodQuantity(),
                         event.goodPrice()
-                )
+                ),
+                MessageType.PAY_GOODS_COMMAND
         );
 
         outboxService.createEvent(
@@ -58,7 +61,8 @@ public class OrderSagaService
                 new OrderStatusChangedEvent(
                         event.orderId(),
                         OrderStatus.RESERVED.name()
-                )
+                ),
+                MessageType.ORDER_STATUS_CHANGED_EVENT
         );
     }
 
@@ -67,7 +71,8 @@ public class OrderSagaService
         outboxService.createEvent(
                 "order-command-topic", new RejectOrderCommand(
                         event.orderId()
-                )
+                ),
+                MessageType.REJECT_ORDER_COMMAND
         );
     }
 
@@ -81,7 +86,8 @@ public class OrderSagaService
                         event.orderId(),
                         event.goodQuantity(),
                         event.goodPrice()
-                )
+                ),
+                MessageType.GOOD_COMPLETE_RESERVE_COMMAND
         );
     }
 
@@ -94,7 +100,8 @@ public class OrderSagaService
                         event.goodId(),
                         event.orderId(),
                         event.goodQuantity()
-                )
+                ),
+                MessageType.CANCEL_GOOD_RESERVE_COMMAND
         );
     }
 
@@ -106,7 +113,8 @@ public class OrderSagaService
                 new OrderStatusChangedEvent(
                         event.orderId(),
                         OrderStatus.APPROVED.name()
-                )
+                ),
+                MessageType.ORDER_STATUS_CHANGED_EVENT
         );
 
         historyService.addNewHistory(
@@ -127,7 +135,8 @@ public class OrderSagaService
                         event.orderId(),
                         event.goodQuantity(),
                         event.goodPrice()
-                )
+                ),
+                MessageType.CANCEL_GOOD_RESERVE_COMMAND
         );
     }
 
@@ -140,7 +149,8 @@ public class OrderSagaService
                 "order-command-topic",
                 new RejectOrderCommand(
                         event.orderId()
-                )
+                ),
+                MessageType.REJECT_ORDER_COMMAND
         );
     }
 

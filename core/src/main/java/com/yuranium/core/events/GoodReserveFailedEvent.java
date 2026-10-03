@@ -1,5 +1,7 @@
 package com.yuranium.core.events;
 
+import com.yuranium.core.KafkaMessage;
+
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -12,4 +14,4 @@ public record GoodReserveFailedEvent(
 
         String reason
 
-) implements Serializable {}
+) implements KafkaMessage, Serializable {}
